@@ -1,0 +1,30 @@
+Rewrite this resume in professional ATS-friendly format.
+
+Make it:
+- More impactful
+- Keyword optimized
+- Better structured
+- Recruiter friendly
+
+Resume:
+{resume_text}
+"""
+
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": rewrite_prompt}]
+                )
+
+                rewritten_resume = response.choices[0].message.content
+
+            st.subheader("📝 Improved Resume")
+            st.markdown(rewritten_resume)
+
+            st.download_button(
+                "📥 Download Improved Resume",
+                rewritten_resume,
+                file_name="Improved_Resume.txt"
+            )
+
+        except Exception as e:
+            st.error(f"Error: {e}")
