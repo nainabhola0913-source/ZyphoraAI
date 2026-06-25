@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import fitz  # PyMuPDF
+from datetime import date
 
 # Load API key
 load_dotenv()
@@ -36,7 +37,11 @@ def signup(username, password):
 
     users[username] = {
     "password": password,
-    "plan": "free"
+    "plan": "free",
+    "usage_count": 0,
+    "last_used": str(date.today())
+
+
 }
     save_users(users)
     return True, "Account created successfully"
@@ -98,12 +103,38 @@ if not st.session_state["logged_in"]:
 # Current user
 username = st.session_state["username"]
 
+today = str(date.today())
+
+if users[username]["last_used"] != today:
+    users[username]["usage_count"] = 0
+    users[username]["last_used"] = today
+    save_users(users)
+
+if users[username]["plan"] == "free":
+    if users[username]["usage_count"] >= 3:
+        st.error("🚫 Daily limit reached. Upgrade to Pro or Premium.")
+        st.stop()
+
+# Temporary plan
 # Temporary plan
 user_plan = users[username].get("plan", "free")
+
 # Sidebar User Info
 st.sidebar.title("🚀 Zyphora AI")
 st.sidebar.success(f"👤 {username}")
 st.sidebar.info(f"💎 Plan: {user_plan.upper()}")
+
+if user_plan == "free":
+    remaining = 3 - users[username]["usage_count"]
+    st.sidebar.warning(
+        f"📊 Remaining Uses Today: {remaining}"
+    )
+
+# ADD THIS HERE 👇
+page = st.sidebar.radio(
+    "Menu",
+    ["Resume Analyzer", "Pricing"]
+)
 
 if st.sidebar.button("🚪 Logout"):
     st.session_state.clear()
@@ -120,7 +151,6 @@ def extract_text_from_pdf(uploaded_file):
         text += page.get_text()
 
     return text
-
 
 # AI Analysis
 def analyze_resume(text,job_description):
@@ -636,28 +666,29 @@ Get:
 ✅ Learning Roadmap
 ✅ Recruiter Feedback
 """)
+if page == "Resume Analyzer":
 
-uploaded_file = st.file_uploader(
-    "Upload Resume (PDF)",
-    type=["pdf"]
-)
+    uploaded_file = st.file_uploader(
+        "Upload Resume (PDF)",
+        type=["pdf"]
+    )
 
-job_description = st.text_area(
-    "Paste Job Description (Optional)"
-)
+    job_description = st.text_area(
+        "Paste Job Description (Optional)"
+    )
 
-if uploaded_file is not None:
+    if uploaded_file is not None:
 
-    if uploaded_file.size > 5 * 1024 * 1024:
-        st.error("File size must be under 5 MB")
-        st.stop()
+        if uploaded_file.size > 5 * 1024 * 1024:
+            st.error("File size must be under 5 MB")
+            st.stop()
 
-    with st.spinner("AI is thinking... 🤖"):
-        resume_text = extract_text_from_pdf(uploaded_file)
-        word_count = len(resume_text.split())
+        with st.spinner("AI is thinking... 🤖"):
+            resume_text = extract_text_from_pdf(uploaded_file)
+            word_count = len(resume_text.split())
 
-    st.info(f"📄 Resume Word Count: {word_count}")
-    st.success("Resume Uploaded Successfully!")
+        st.info(f"📄 Resume Word Count: {word_count}")
+        st.success("Resume Uploaded Successfully!")
 
     # =========================
     # BUTTONS SECTION
@@ -683,6 +714,9 @@ if uploaded_file is not None:
     # =========================
 
     if analyze_btn:
+     if users[username]["plan"] == "free":
+      users[username]["usage_count"] += 1
+      save_users(users)
 
      with st.spinner("Analyzing Resume..."):
         result = analyze_resume(resume_text, job_description)
@@ -859,3 +893,19 @@ if uploaded_file is not None:
 
      except Exception as e:
         st.error(f"Error: {e}")
+if page == "Pricing":
+
+    st.title("💎 ZyphoraAI Plans")
+
+    st.subheader("🆓 Free")
+    st.write("3 analyses per day")
+
+    st.subheader("💎 Pro - ₹99/month")
+    st.write("Unlimited analyses")
+
+    st.subheader("🚀 Premium - ₹199/month")
+    st.write("Unlimited analyses + future premium tools")
+
+    st.button("Upgrade to Pro")
+
+    st.button("Upgrade to Premium")
