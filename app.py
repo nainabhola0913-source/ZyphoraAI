@@ -27,6 +27,9 @@ def save_users(users):
         json.dump(users, f, indent=4)
 
 users = load_users()
+# st.write(users)
+# st.write("DEBUG USERS:", users)
+st.error(f"DEBUG USERS = {users}")
 
 # =========================
 # SIGNUP FUNCTION
@@ -905,7 +908,7 @@ if page == "Pricing":
 
     st.subheader("🚀 Premium - ₹199/month")
     st.write("Unlimited analyses + future premium tools")
-    
+
 if st.button("💎 Upgrade to Pro"):
     users[username]["plan"] = "pro"
     save_users(users)
