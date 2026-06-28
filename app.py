@@ -613,6 +613,9 @@ with col1:
 • 3 Uses Daily
 """)
 
+    if user_plan == "free":
+        st.success("✅ Current Plan")
+
 with col2:
     st.success("""
 💎 Pro Plan - ₹99
@@ -621,6 +624,12 @@ with col2:
 • Resume Rewrite
 • Skill Gap Analysis
 """)
+
+    if user_plan == "pro":
+        st.success("✅ Current Plan")
+    else:
+        if st.button("💎 Upgrade to Pro"):
+            st.info("🚧 Razorpay payment will be added here.")
 
 with col3:
     st.warning("""
@@ -631,7 +640,13 @@ with col3:
 • LinkedIn Profile
 • Everything Included
 """)
-    
+
+    if user_plan == "premium":
+        st.success("✅ Current Plan")
+    else:
+        if st.button("🚀 Upgrade to Premium"):
+            st.info("🚧 Razorpay payment will be added here.")
+            
     # 🔴 ADD THIS BELOW INFO BOX
 # if st.button("🚪 Logout"):
 #         st.session_state["logged_in"] = False
