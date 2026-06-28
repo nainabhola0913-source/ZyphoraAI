@@ -30,9 +30,6 @@ users = load_users()
 # st.write(users)
 # st.write("DEBUG USERS:", users)
 
-st.error(f"Current folder: {os.getcwd()}")
-st.error(f"Users file: {os.path.abspath(USERS_FILE)}")
-st.error(f"DEBUG USERS = {users}")
 # =========================
 # SIGNUP FUNCTION
 # =========================
