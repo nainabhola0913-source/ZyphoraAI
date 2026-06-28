@@ -912,27 +912,4 @@ if page == "Resume Analyzer":
 
      except Exception as e:
         st.error(f"Error: {e}")
-if page == "Pricing":
 
-    st.title("💎 ZyphoraAI Plans")
-
-    st.subheader("🆓 Free")
-    st.write("3 analyses per day")
-
-    st.subheader("💎 Pro - ₹99/month")
-    st.write("Unlimited analyses")
-
-    st.subheader("🚀 Premium - ₹199/month")
-    st.write("Unlimited analyses + future premium tools")
-
-if st.button("💎 Upgrade to Pro"):
-    users[username]["plan"] = "pro"
-    save_users(users)
-    st.success("Upgraded to Pro!")
-    st.rerun()
-
-if st.button("🚀 Upgrade to Premium"):
-    users[username]["plan"] = "premium"
-    save_users(users)
-    st.success("Upgraded to Premium!")
-    st.rerun()
