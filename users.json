@@ -1,11 +1,20 @@
 {
     "admin": {
-        "password": "12345"
+        "password": "12345",
+        "plan": "premium",
+        "usage_count": 0,
+        "last_used": "2026-06-28"
     },
     "Naina": {
-        "password": "012"
+        "password": "012",
+        "plan": "free",
+        "usage_count": 0,
+        "last_used": "2026-06-28"
     },
     "Naina1": {
-        "password": "0123"
+        "password": "0123",
+        "plan": "free",
+        "usage_count": 0,
+        "last_used": "2026-06-28"
     }
 }
