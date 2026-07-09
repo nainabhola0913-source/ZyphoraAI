@@ -1,5 +1,8 @@
+from datetime import date
 streamlit
 openai
 pymupdf
 python-dotenv
 rich
+python-docx
+reportlab

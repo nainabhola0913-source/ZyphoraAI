@@ -67,6 +67,7 @@ if "logged_in" not in st.session_state:
 # =========================
 def auth_page():
     st.title("🔐 Zyphora AI Login System")
+    st.image("assets/logo.png", width=180)
 
     option = st.radio("Choose Option", ["Login", "Signup"])
 
@@ -122,6 +123,7 @@ if users[username]["plan"] == "free":
 user_plan = users[username].get("plan", "free")
 
 # Sidebar User Info
+st.sidebar.image("assets/logo.png.png", width=170)
 st.sidebar.title("🚀 Zyphora AI")
 st.sidebar.success(f"👤 {username}")
 st.sidebar.info(f"💎 Plan: {user_plan.upper()}")
@@ -135,12 +137,14 @@ if user_plan == "free":
 # ADD THIS HERE 👇
 page = st.sidebar.radio(
     "Menu",
-    ["Resume Analyzer", "Pricing"]
+    ["Resume Analyzer", "Pricing","My Account"]
 )
 
 if st.sidebar.button("🚪 Logout"):
     st.session_state.clear()
     st.rerun()
+if page == "My Account":
+    st.switch_page("pages/account.py")    
 
 # Extract text from PDF
 def extract_text_from_pdf(uploaded_file):
@@ -628,8 +632,9 @@ with col2:
     if user_plan == "pro":
         st.success("✅ Current Plan")
     else:
-        if st.button("💎 Upgrade to Pro"):
-            st.info("🚧 Razorpay payment will be added here.")
+        if st.button("💎 Upgrade to Pro", key="pro_plan_button"):
+            st.session_state["selected_plan"] = "pro"
+            st.switch_page("pages/payment.py")
 
 with col3:
     st.warning("""
@@ -644,8 +649,9 @@ with col3:
     if user_plan == "premium":
         st.success("✅ Current Plan")
     else:
-        if st.button("🚀 Upgrade to Premium"):
-            st.info("🚧 Razorpay payment will be added here.")
+        if st.button("🚀 Upgrade to Premium", key="premium_plan_button"):
+            st.session_state["selected_plan"] = "premium"
+            st.switch_page("pages/payment.py")
             
     # 🔴 ADD THIS BELOW INFO BOX
 # if st.button("🚪 Logout"):
@@ -726,14 +732,19 @@ if page == "Resume Analyzer":
      skill_gap_btn = st.button("📊 Skill Gap Analysis")
      job_btn = st.button("💼 Job Suggestions")
 
-    # =========================
-    # ANALYZE LOGIC
-    # =========================
+# =========================
+# ANALYZE LOGIC
+# =========================
 
     if analyze_btn:
+
+     if uploaded_file is None:
+        st.warning("📄 Please upload a resume first.")
+        st.stop()
+
      if users[username]["plan"] == "free":
-      users[username]["usage_count"] += 1
-      save_users(users)
+        users[username]["usage_count"] += 1
+        save_users(users)
 
      with st.spinner("Analyzing Resume..."):
         result = analyze_resume(resume_text, job_description)
@@ -745,13 +756,18 @@ if page == "Resume Analyzer":
             data=result,
             file_name="ATS_Report.txt",
             mime="text/plain"
-    )
+        )
 
 # =========================
 # REWRITE LOGIC
 # ========================
     if rewrite_btn:
-     try:
+
+      if uploaded_file is None:
+        st.warning("📄 Please upload a resume first.")
+        st.stop()
+
+    try:
 
         if user_plan not in ["pro", "premium"]:
             st.warning("🔒 Resume Rewrite is available in Pro Plan (₹99) and Premium Plan (₹199)")
@@ -770,17 +786,23 @@ if page == "Resume Analyzer":
                     mime="text/plain"
                 )
 
-     except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
 
 # =========================
 # INTERVIEW QUESTIONS
 # =========================
     if interview_btn:
-     try:
+
+        if uploaded_file is None:
+          st.warning("📄 Please upload a resume first.")
+          st.stop()
+
+    try:
 
         if user_plan != "premium":
             st.warning("🔒 Interview Questions are available in Premium Plan (₹199)")
+
         else:
             interview_result = generate_interview_questions(resume_text)
 
@@ -793,14 +815,23 @@ if page == "Resume Analyzer":
                 mime="text/plain"
             )
 
-     except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
 
 # =========================
 # COVER LETTER
 # =========================
-    if cover_btn:
-     try:
+if cover_btn:
+
+    if uploaded_file is None:
+        st.warning("📄 Please upload a resume first.")
+        st.stop()
+
+    if not job_description.strip():
+        st.warning("📋 Please paste a Job Description first.")
+        st.stop()
+
+    try:
 
         if user_plan != "premium":
             st.warning("🔒 Cover Letter is available in Premium Plan (₹199)")
@@ -822,14 +853,21 @@ if page == "Resume Analyzer":
                     mime="text/plain"
                 )
 
-     except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
-
 # =========================
 # LINKEDIN PROFILE
 # =========================
-    if linkedin_btn:
-     try:
+    # =========================
+# LINKEDIN PROFILE
+# =========================
+if linkedin_btn:
+
+    if uploaded_file is None:
+        st.warning("📄 Please upload a resume first.")
+        st.stop()
+
+    try:
 
         if user_plan != "premium":
             st.warning("🔒 LinkedIn Profile is available in Premium Plan (₹199)")
@@ -837,9 +875,7 @@ if page == "Resume Analyzer":
         else:
             with st.spinner("Creating LinkedIn Profile..."):
 
-                linkedin_profile = generate_linkedin_profile(
-                    resume_text
-                )
+                linkedin_profile = generate_linkedin_profile(resume_text)
 
                 st.markdown(linkedin_profile)
 
@@ -850,20 +886,32 @@ if page == "Resume Analyzer":
                     mime="text/plain"
                 )
 
-     except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
 # =========================
 # skill_gap
 # =========================
       
-    if skill_gap_btn:
-     try:
+    # =========================
+# SKILL GAP ANALYSIS
+# =========================
+if skill_gap_btn:
+
+    if uploaded_file is None:
+        st.warning("📄 Please upload a resume first.")
+        st.stop()
+
+    if not job_description.strip():
+        st.warning("📋 Please paste a Job Description first.")
+        st.stop()
+
+    try:
 
         if user_plan not in ["pro", "premium"]:
             st.warning("🔒 Skill Gap Analysis is available in Pro Plan (₹99) and Premium Plan (₹199)")
 
         else:
-            with st.spinner("Analyzing skill gaps..."):
+            with st.spinner("Analyzing Skill Gaps..."):
 
                 result = generate_skill_gap(
                     resume_text,
@@ -879,25 +927,31 @@ if page == "Resume Analyzer":
                     mime="text/plain"
                 )
 
-     except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
         
 # =========================
 # job_btn
 # ========================= 
     
-    if job_btn:
-     try:
+    # =========================
+# JOB SUGGESTIONS
+# =========================
+if job_btn:
+
+    if uploaded_file is None:
+        st.warning("📄 Please upload a resume first.")
+        st.stop()
+
+    try:
 
         if user_plan not in ["pro", "premium"]:
             st.warning("🔒 Job Suggestions are available in Pro Plan (₹99) and Premium Plan (₹199)")
 
         else:
-            with st.spinner("Finding suitable jobs..."):
+            with st.spinner("Finding Suitable Jobs..."):
 
-                result = generate_job_suggestions(
-                    resume_text
-                )
+                result = generate_job_suggestions(resume_text)
 
                 st.markdown(result)
 
@@ -908,29 +962,5 @@ if page == "Resume Analyzer":
                     mime="text/plain"
                 )
 
-     except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
-if page == "Pricing":
-
-    st.title("💎 ZyphoraAI Plans")
-
-    st.subheader("🆓 Free")
-    st.write("3 analyses per day")
-
-    st.subheader("💎 Pro - ₹99/month")
-    st.write("Unlimited analyses")
-
-    st.subheader("🚀 Premium - ₹199/month")
-    st.write("Unlimited analyses + future premium tools")
-
-if st.button("💎 Upgrade to Pro"):
-    users[username]["plan"] = "pro"
-    save_users(users)
-    st.success("Upgraded to Pro!")
-    st.rerun()
-
-if st.button("🚀 Upgrade to Premium"):
-    users[username]["plan"] = "premium"
-    save_users(users)
-    st.success("Upgraded to Premium!")
-    st.rerun()
