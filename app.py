@@ -587,7 +587,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
+hero_section()
 with  st.sidebar:
       st.title("🚀 Zyphora AI")
       st.caption(
