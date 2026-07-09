@@ -122,7 +122,7 @@ if users[username]["plan"] == "free":
 user_plan = users[username].get("plan", "free")
 
 # Sidebar User Info
-st.sidebar.image("assets/logo.png.png", width=170)
+st.sidebar.image("assets/logo.png", width=170)
 st.sidebar.title("🚀 Zyphora AI")
 st.sidebar.success(f"👤 {username}")
 st.sidebar.info(f"💎 Plan: {user_plan.upper()}")
