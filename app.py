@@ -29,7 +29,6 @@ def save_users(users):
 users = load_users()
 # st.write(users)
 # st.write("DEBUG USERS:", users)
-
 # =========================
 # SIGNUP FUNCTION
 # =========================
@@ -630,12 +629,11 @@ with col2:
 """)
 
     if user_plan == "pro":
-        st.success("✅ Current Plan")
+       st.success("✅ Current Plan")
     else:
-        if st.button("💎 Upgrade to Pro", key="pro_plan_button"):
-            st.session_state["selected_plan"] = "pro"
-            st.switch_page("pages/payment.py")
-
+       if st.button("💎 Upgrade to Pro", key="pro_plan_button"):
+        st.session_state["selected_plan"] = "pro"
+        st.switch_page("pages/payment.py")
 with col3:
     st.warning("""
 🚀 Premium Plan - ₹199
@@ -649,10 +647,9 @@ with col3:
     if user_plan == "premium":
         st.success("✅ Current Plan")
     else:
-        if st.button("🚀 Upgrade to Premium", key="premium_plan_button"):
+         if st.button("🚀 Upgrade to Premium", key="premium_plan_button"):
             st.session_state["selected_plan"] = "premium"
             st.switch_page("pages/payment.py")
-            
     # 🔴 ADD THIS BELOW INFO BOX
 # if st.button("🚪 Logout"):
 #         st.session_state["logged_in"] = False

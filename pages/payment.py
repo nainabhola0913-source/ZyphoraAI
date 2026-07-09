@@ -49,7 +49,6 @@ col1, col2 = st.columns(2)
 with col1:
     if st.button("⬅ Back"):
         st.switch_page("app.py")
-
 with col2:
     if st.button("💳 Proceed to Payment"):
         st.success("Payment gateway will be connected after Razorpay approval.")

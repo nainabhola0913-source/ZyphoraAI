@@ -57,4 +57,8 @@ st.divider()
 
 if st.button("🚪 Logout"):
     st.session_state.clear()
+<<<<<<< HEAD
     st.switch_page("app.py")
+=======
+    st.switch_page("app.py")
+>>>>>>> 86cb616afda488f3c3ed315a179361b645671f01
