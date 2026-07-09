@@ -1,7 +1,6 @@
-from datetime import date
 streamlit
 openai
-pymupdf
+PyMuPDF
 python-dotenv
 rich
 python-docx
